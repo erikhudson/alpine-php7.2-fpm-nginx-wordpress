@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.2-fpm-alpine3.11
 LABEL Maintainer="Erik Hudson <erik.marques@centralit.com.br>" \
       Description="Conteiner preparado para Wordpress com Nginx 1.17.3 e PHP-FPM 7.2.21"
 
@@ -164,10 +164,11 @@ RUN set -x \
     && mv /tmp/envsubst /usr/local/bin/ \
 # Bring in tzdata so users could set the timezones through the environment
 # variables
-    && apk add --no-cache tzdata \
+    && apk add --update tzdata supervisor \
 # forward request and error logs to docker log collector
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
+
 
 # Configure supervisord
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
