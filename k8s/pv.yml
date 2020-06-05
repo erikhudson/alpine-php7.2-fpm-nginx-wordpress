@@ -4,7 +4,7 @@ metadata:
   labels:
     app: tainacan-diamante
     tier: frontend
-  name: tai-forum-persistent-storage
+  name: tainacan-diamante-persistent-storage
   namespace: tainacan
 spec:
   capacity:
