@@ -29,8 +29,8 @@ deploy:
     - apk add --no-cache gettext
     - echo $KUBECONFIG_PRD | base64 -d > KUBECONFIG
     - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/configmap.yml
-    #- kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/pv.yml
-    #- kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/pvc.yml
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/pv.yml
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/pvc.yml
     - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/service.yml
     - envsubst < k8s/deploy.yml | kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f -
     - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/ingress.yml
