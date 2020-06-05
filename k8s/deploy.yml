@@ -29,14 +29,14 @@ spec:
         - containerPort: 80
           name: tainacan-diamante
         volumeMounts:
-        - name: tainacan-diamante-persistent-storage
+        - name: tai-forum-persistent-storage
           mountPath: "/var/www/html"          # which data will be stored
           subPath: tainacan-diamante
         - name: tainacan-diamante-php-custom
           mountPath: /usr/local/etc/php/conf.d/
           subPath: 20-custom.ini       
       volumes:
-      - name: tainacan-diamante-persistent-storage
+      - name: tai-forum-persistent-storage
         persistentVolumeClaim:
           claimName: tainacan-diamante-persistent-storage
       - configMap:
