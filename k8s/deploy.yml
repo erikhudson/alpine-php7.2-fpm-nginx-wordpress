@@ -29,7 +29,7 @@ spec:
         - containerPort: 80
           name: tainacan-mdd
         volumeMounts:
-        - name: tai-forum-persistent-storage
+        - name: tainacan-diamante-persistent-storage
           mountPath: "/var/www/html"          # which data will be stored
           subPath: tainacan-diamante
         - name: tainacan-diamante-php-custom
