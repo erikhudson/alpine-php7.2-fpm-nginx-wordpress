@@ -45,5 +45,5 @@ spec:
       nodeSelector:
         name: prod
       imagePullSecrets:
-      - name: registry
+      - name: registry-museus
       
