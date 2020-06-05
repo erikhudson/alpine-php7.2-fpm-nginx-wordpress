@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: tainacan-diamante
+    tier: frontend
+  name: tainacan-diamante-persistent-storage
+  namespace: tainacan
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /data-docker-cluster/tainacan
+    server: 10.197.93.69

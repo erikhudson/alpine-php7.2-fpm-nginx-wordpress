@@ -1,0 +1,39 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.2.2"
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:19.03.8-dind
+  script:
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+      else
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+      fi
+    - /build/build.sh
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+deploy:
+  stage: deploy
+  image: alpine/k8s:1.11.10  
+  script:    
+    - apk add --no-cache gettext
+    - echo $KUBECONFIG_PRD | base64 -d > KUBECONFIG
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/configmap.yml
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/pv.yml
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/pvc.yml
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/service.yml
+    - envsubst < k8s/deploy.yml | kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f -
+    - kubectl --kubeconfig=KUBECONFIG --insecure-skip-tls-verify apply -f k8s/ingress.yml
+  only:
+    refs:
+      - master

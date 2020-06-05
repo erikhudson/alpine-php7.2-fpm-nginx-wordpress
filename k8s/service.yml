@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tainacan-diamante
+  name: tainacan-diamante
+  namespace: tainacan
+spec:
+  selector:
+    app: tainacan-diamante
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80

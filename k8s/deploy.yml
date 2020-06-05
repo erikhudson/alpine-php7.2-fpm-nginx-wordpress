@@ -1,0 +1,48 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: tainacan-diamante
+  namespace: tainacan
+  labels:
+    app: tainacan-diamante
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tainacan-diamante
+      tier: frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: tainacan-diamante
+        tier: frontend
+    spec:
+      containers:
+      - image: registry.paas.museus.gov.br/tainacan/$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA      
+        name: tainacan-diamante        
+        ports:
+        - containerPort: 80
+          name: tainacan-diamante
+        volumeMounts:
+        - name: tainacan-diamante-persistent-storage
+          mountPath: "/var/www/html"          # which data will be stored
+          subPath: tainacan-diamante
+        - name: tainacan-diamante-php-custom
+          mountPath: /usr/local/etc/php/conf.d/
+          subPath: 20-custom.ini       
+      volumes:
+      - name: tainacan-diamante-persistent-storage
+        persistentVolumeClaim:
+          claimName: tainacan-diamante-persistent-storage
+      - configMap:
+          name: tainacan-diamante-php-custom
+        name: tainacan-diamante-php-custom
+      nodeSelector:
+        devops: "true"
+      imagePullSecrets:
+      - name: gitlab
