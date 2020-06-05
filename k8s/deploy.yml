@@ -46,3 +46,4 @@ spec:
         name: prod
       imagePullSecrets:
       - name: registry
+      
