@@ -1,14 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tainacan-diamante-persistent-storage
-  namespace: tainacan
+  name: wordpress-persistent-storage
   labels:
-    app: tainacan-diamante
+    app: wordpress
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
-  volumeName: tai-forum-persistent-storage
+      storage: 60Gi
+  storageClassName: resize-sc

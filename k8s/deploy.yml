@@ -1,16 +1,14 @@
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tainacan-diamante
-  namespace: tainacan
+  name: wordpress
   labels:
-    app: tainacan-diamante
+    app: wordpress
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tainacan-diamante
-      tier: frontend
+      app: wordpress
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,31 +17,29 @@ spec:
   template:
     metadata:
       labels:
-        app: tainacan-diamante
-        tier: frontend
+        app: wordpress
     spec:
       containers:
-      - image: registry.paas.museus.gov.br/tainacan/$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA      
-        name: tainacan-diamante        
+      - image: erikhudson/alpine-php7.2-fpm-nginx-wordpress:v3
+        name: wordpress
         ports:
         - containerPort: 80
-          name: tainacan-mdd
+          name: nginx
         volumeMounts:
-        - name: tainacan-diamante-persistent-storage
-          mountPath: "/var/www/html"          # which data will be stored
-          subPath: tainacan-diamante
-        - name: tainacan-diamante-php-custom
-          mountPath: /usr/local/etc/php/conf.d/
-          subPath: 20-custom.ini       
+        - name: wordpress-persistent-storage
+          mountPath: "/var/www/html"
+          subPath: wordpress
+        - name: wordpress-php-custom
+          mountPath: /usr/local/etc/php/conf.d/20-custom.ini
+          subPath: 20-custom.ini
       volumes:
-      - name: tainacan-diamante-persistent-storage
+      - name: wordpress-persistent-storage
         persistentVolumeClaim:
-          claimName: tainacan-diamante-persistent-storage
+          claimName: wordpress-persistent-storage
       - configMap:
-          name: tainacan-diamante-php-custom
-        name: tainacan-diamante-php-custom
+          name: wordpress-php-custom
+        name: wordpress-php-custom
       nodeSelector:
-        name: prod
+        prod: "true"
       imagePullSecrets:
-      - name: registry-museus
-      
+      - name: registry

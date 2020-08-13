@@ -9,22 +9,21 @@ metadata:
       # Lets
       certmanager.k8s.io/cluster-issuer: letsencrypt-prod
       kubernetes.io/tls-acme: "true"      
-    name: tainacan-diamante
-    namespace: tainacan
+    name: wordpress
     labels:
-      app: tainacan-diamante
+      app: wordpress
       tier: frontend
 spec:
   rules:
-  - host: museudodiamante.acervos.museus.gov.br
+  - host: nginx.funpresp.com.br
     http:
       paths:
       - backend:
-          serviceName: tainacan-diamante
+          serviceName: wordpress
           servicePort: 80
         path: /
   tls:
     - hosts:
-      - museudodiamante.acervos.museus.gov.br
-      secretName: museudodiamante-acervos-lets
+      - nginx.funpresp.com.br
+      secretName: wildcard2022
   
